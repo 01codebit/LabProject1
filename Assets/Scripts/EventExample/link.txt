@@ -1,0 +1,4 @@
+Esempio di ScriptableObject usato per eventi:
+
+
+https://unity.com/how-to/architect-game-code-scriptable-objects#architect-events
