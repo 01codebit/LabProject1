@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System.Threading;
 
 public class PostButton : MonoBehaviour
 {
@@ -8,23 +9,21 @@ public class PostButton : MonoBehaviour
 
     [SerializeField] private TMP_InputField _bodyText;
 
-    [SerializeField] private AsyncLoader _loader;
-
     [SerializeField] private Button _postButton;
 
     [SerializeField] private ResponseTextController _responseTextController;
 
-    private string CleanString(string input)
-    {
-        var output = input.Replace(" ", "");
-        output = output.Replace("\n", "");
+    private AsyncDataLoader _loader;
 
-        return output;
+    private void Awake()
+    {
+        _loader = FindObjectOfType<AsyncDataLoader>();
     }
 
     public async void OnButtonPress()
     {
         Debug.Log("POST button pressed");
+        Debug.Log($"current thread: {Thread.CurrentThread.GetHashCode()}");
 
         _postButton.interactable = false;
         _responseTextController.SetLoading();
@@ -32,8 +31,8 @@ public class PostButton : MonoBehaviour
         var url = _urlText.text;
         var body = _bodyText.text;
 
-        url = CleanString(url);
-        body = CleanString(body);
+        url = StringFunctions.CleanString(url);
+        body = StringFunctions.CleanString(body);
 
         Debug.Log($"Post url: {url}");
         Debug.Log($"Post body: {body}");

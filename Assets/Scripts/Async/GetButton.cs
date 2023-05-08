@@ -1,40 +1,41 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System.Threading;
+using System;
+using System.Threading.Tasks;
 
 public class GetButton : MonoBehaviour
 {
     [SerializeField] private TMP_InputField _urlText;
 
-    [SerializeField] private AsyncLoader _loader;
-
     [SerializeField] private Button _getButton;
 
     [SerializeField] private ResponseTextController _responseTextController;
 
-    private string CleanString(string input)
-    {
-        var output = input.Replace(" ", "");
-        output = output.Replace("\n", "");
+    private AsyncDataLoader _loader;
 
-        return output;
+    private void Awake()
+    {
+        _loader = FindObjectOfType<AsyncDataLoader>();
     }
 
     public async void OnButtonPress()
     {
-        Debug.Log("GET button pressed");
-        var start = Time.time;
+        Debug.Log("[GetButton.OnButtonPress] GET button pressed");
+        ThreadFunctions.ShowThreadInformation("GetButton.OnButtonPress (Task #" + Task.CurrentId.ToString() + ")");
 
         _getButton.interactable = false;
         _responseTextController.SetLoading();
 
         var url = _urlText.text;
 
-        url = CleanString(url);
+        url = StringFunctions.CleanString(url);
 
-        Debug.Log($"Post url: {url}");
+        Debug.Log($"[GetButton.OnButtonPress] GET url: {url}");
 
         var result = await _loader.DoGetRequest(url);
+
         _responseTextController.SetText(result);
         _getButton.interactable = true;
     }
